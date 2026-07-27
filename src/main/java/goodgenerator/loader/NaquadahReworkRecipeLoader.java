@@ -112,6 +112,62 @@ public class NaquadahReworkRecipeLoader {
             .metadata(QFT_FOCUS_TIER, 3)
             .addTo(quantumForceTransformerRecipes);
 
+        // And their francium edition
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GGMaterial.naquadahEarth.get(OrePrefixes.dust, 32),
+                Materials.Francium.getDust(4),
+                Materials.Carbon.getDust(1))
+            .itemOutputs(
+                GGMaterial.inertNaquadah.get(OrePrefixes.dust, 2),
+                Materials.Titanium.getDust(64),
+                Materials.Adamantium.getDust(64),
+                Materials.Gallium.getDust(64))
+            .fluidInputs(
+                Materials.Hydrogen.getGas(64_000),
+                Materials.Fluorine.getGas(64_000),
+                Materials.Oxygen.getGas(100))
+            .duration(10 * SECONDS)
+            .eut(GTValues.VP[10])
+            .metadata(QFT_CATALYST, GregtechItemList.SimpleNaquadahCatalyst.get(0))
+            .metadata(QFT_FOCUS_TIER, 2)
+            .addTo(quantumForceTransformerRecipes);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GGMaterial.enrichedNaquadahEarth.get(OrePrefixes.dust, 32),
+                Materials.Zinc.getDust(64),
+                Materials.Francium.getDust(4),
+                Materials.Carbon.getDust(1))
+            .itemOutputs(GGMaterial.inertEnrichedNaquadah.get(OrePrefixes.dust, 2), Materials.Trinium.getDust(64))
+            .fluidInputs(Materials.SulfuricAcid.getFluid(16_000), Materials.Oxygen.getGas(100))
+            .fluidOutputs(GGMaterial.wasteLiquid.getFluidOrGas(32_000))
+            .duration(10 * SECONDS)
+            .eut(GTValues.VP[11])
+            .metadata(QFT_CATALYST, GregtechItemList.SimpleNaquadahCatalyst.get(0))
+            .metadata(QFT_FOCUS_TIER, 2)
+            .addTo(quantumForceTransformerRecipes);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GGMaterial.naquadriaEarth.get(OrePrefixes.dust, 32),
+                Materials.Francium.getDust(4),
+                Materials.Magnesium.getDust(64))
+            .itemOutputs(
+                GGMaterial.inertNaquadria.get(OrePrefixes.dust, 2),
+                Materials.Barium.getDust(64),
+                Materials.Indium.getDust(64),
+                ItemList.NaquadriaSupersolid.get(2))
+            .fluidInputs(
+                Materials.PhosphoricAcid.getFluid(16_000),
+                Materials.SulfuricAcid.getFluid(16_000),
+                Materials.Oxygen.getGas(100))
+            .duration(5 * SECONDS)
+            .eut(GTValues.VP[12])
+            .metadata(QFT_CATALYST, GregtechItemList.AdvancedNaquadahCatalyst.get(0))
+            .metadata(QFT_FOCUS_TIER, 3)
+            .addTo(quantumForceTransformerRecipes);
+
         // Activate Them
 
         GTValues.RA.stdBuilder()
@@ -254,6 +310,16 @@ public class NaquadahReworkRecipeLoader {
             .eut(TierEU.RECIPE_MV)
             .addTo(autoclaveRecipes);
 
+        // francium
+        GTValues.RA.stdBuilder()
+            .itemInputs(Materials.FranciumHydroxide.getDust(3))
+            .fluidInputs(GGMaterial.naquadahRichSolution.getFluidOrGas(5_000))
+            .itemOutputs(GGMaterial.naquadahine.get(OrePrefixes.dust, 60))
+            .fluidOutputs(GGMaterial.P507.getFluidOrGas(1_000))
+            .duration(100 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(autoclaveRecipes);
+
         // NqO2 + C = CO2 + Nq
         GTValues.RA.stdBuilder()
             .itemInputs(
@@ -276,6 +342,21 @@ public class NaquadahReworkRecipeLoader {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Antimony, 15))
             .outputChances(6250, 6250, 10000)
             .fluidOutputs(GGMaterial.lowQualityNaquadahSolution.getFluidOrGas(9_000))
+            .duration(50 * SECONDS)
+            .eut(TierEU.RECIPE_EV)
+            .addTo(centrifugeRecipes);
+
+        // francium VS fluorine
+        GTValues.RA.stdBuilder()
+            .itemOutputs(Materials.FranciumHydroxide.getDust(3))
+            .circuit(2)
+            .fluidInputs(GGMaterial.lowQualityNaquadahEmulsion.getFluidOrGas(10_000))
+            .itemOutputs(
+                GGMaterial.galliumHydroxide.get(OrePrefixes.dust, 64),
+                GGMaterial.galliumHydroxide.get(OrePrefixes.dust, 48),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Antimony, 15))
+            .outputChances(6250, 6250, 10000)
+            .fluidOutputs(GGMaterial.lowQualityNaquadahSolution.getFluidOrGas(10_125))
             .duration(50 * SECONDS)
             .eut(TierEU.RECIPE_EV)
             .addTo(centrifugeRecipes);
@@ -309,6 +390,16 @@ public class NaquadahReworkRecipeLoader {
             .itemOutputs(GGMaterial.concentratedEnrichedNaquadahSludge.get(OrePrefixes.dust, 8))
             .fluidOutputs(GGMaterial.P507.getFluidOrGas(2_500))
             .duration(50 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(autoclaveRecipes);
+
+        // francium
+        GTValues.RA.stdBuilder()
+            .itemInputs(Materials.FranciumHydroxide.getDust(10))
+            .fluidInputs(GGMaterial.enrichedNaquadahRichSolution.getFluidOrGas(10_000))
+            .itemOutputs(GGMaterial.concentratedEnrichedNaquadahSludge.get(OrePrefixes.dust, 16))
+            .fluidOutputs(GGMaterial.P507.getFluidOrGas(2_500))
+            .duration(100 * SECONDS)
             .eut(TierEU.RECIPE_HV)
             .addTo(autoclaveRecipes);
 
