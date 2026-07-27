@@ -348,7 +348,7 @@ public class NaquadahReworkRecipeLoader {
 
         // francium VS fluorine
         GTValues.RA.stdBuilder()
-            .itemOutputs(Materials.FranciumHydroxide.getDust(3))
+            .itemInputs(Materials.FranciumHydroxide.getDust(3))
             .circuit(2)
             .fluidInputs(GGMaterial.lowQualityNaquadahEmulsion.getFluidOrGas(10_000))
             .itemOutputs(
