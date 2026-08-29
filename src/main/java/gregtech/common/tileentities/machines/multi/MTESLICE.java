@@ -1,5 +1,6 @@
 package gregtech.common.tileentities.machines.multi;
 
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
@@ -15,6 +16,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 
+import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -30,7 +32,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.misc.GTStructureChannels;
+import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
 
 public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implements ISurvivalConstructable {
 
@@ -40,19 +42,25 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
     private static final String tier2 = "tier2";
     private static final String tier3 = "tier3";
 
-    private static final int OFFSET_X1 = 1;
+    private byte mtier = 1;
+
+    private static final int OFFSET_X1 = 6;
     private static final int OFFSET_X2 = 1;
     private static final int OFFSET_X3 = 1;
-    private static final int OFFSET_Y1 = 2;
+    private static final int OFFSET_Y1 = 7;
     private static final int OFFSET_Y2 = 2;
     private static final int OFFSET_Y3 = 2;
     private static final int OFFSET_Z1 = 0;
     private static final int OFFSET_Z2 = 0;
     private static final int OFFSET_Z3 = 0;
 
-    private static final int PARALLEL_PER_TIER = 1;
-    private static final float SPEED = 1f;
-    private static final float EU_EFFICIENCY = 1f;
+    private static final int BASE_PARALLEL_PER_TIER = 4;
+    private static final float BASE_SPEED = 3f;
+    private static final float BASE_EU_EFFICIENCY = 0.85f;
+
+    private MTEHatchDynamoTunnel laserSource = null;
+    private int laserAmps = 1;
+    private int laserTier = 0;
 
     public MTESLICE(final int aID, final String aName, final String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -75,23 +83,135 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
                     tier1,
                     // spotless:off
                     new String[][]{{
-                        "BBB",
-                        "BBB",
-                        "B~B",
-                        "BBB",
-                        "C C"
+                        "             ",
+                        "    AAAAA    ",
+                        "   C     C   ",
+                        "   C     C   ",
+                        "   C     C   ",
+                        "   C     C   ",
+                        "   C     C   ",
+                        "    AA~AA    ",
+                        "             "
                     },{
-                        "BBB",
-                        "A A",
-                        "A A",
-                        "BBB",
-                        "   "
+                        "    AAAAA    ",
+                        "  AA     AA  ",
+                        "             ",
+                        "             ",
+                        "             ",
+                        "             ",
+                        "             ",
+                        "  AA     AA  ",
+                        "    AAAAA    "
                     },{
-                        "BBB",
-                        "BAB",
-                        "BAB",
-                        "BBB",
-                        "C C"
+                        "  AAAAAAAAA  ",
+                        " A  DGGGD  A ",
+                        "    D   D    ",
+                        "             ",
+                        "             ",
+                        "             ",
+                        "    D   D    ",
+                        " A  DGGGD  A ",
+                        "  AAAAAAAAA  "
+                    },{
+                        "  AAAAAAAAA  ",
+                        " A AAAAAAA A ",
+                        "C  BDAAADB  C",
+                        "C  B FFF B  C",
+                        "C  B FFF B  C",
+                        "C  B FFF B  C",
+                        "C  BDAAADB  C",
+                        " A BGGGBBB A ",
+                        "  AAAAAAAAA  "
+                    },{
+                        " AAAAAAAAAAA ",
+                        "A DAAAAAAAD A",
+                        "  DDAGBGADD  ",
+                        "    F   F    ",
+                        "    F   F    ",
+                        "    F   F    ",
+                        "  DDAHHHADD  ",
+                        "A DBGGGBGGD A",
+                        " AAAAAAAAAAA "
+                    },{
+                        " AAAAAAAAAAA ",
+                        "A GAAAAAAAG A",
+                        "   AGGBGGA   ",
+                        "   F     F   ",
+                        "   F     F   ",
+                        "   F     F   ",
+                        "   AHHHHHA   ",
+                        "A GBGGBBGGG A",
+                        " AAAAAAAAAAA "
+                    },{
+                        " AAAAAAAAAAA ",
+                        "A GAAAAAAAG A",
+                        "   ABBIBBA   ",
+                        "   FE   EF   ",
+                        "   F E E F   ",
+                        "   F     F   ",
+                        "   AHHHHHA   ",
+                        "A GBBBBGGGG A",
+                        " AAAAAAAAAAA "
+                    },{
+                        " AAAAAAAAAAA ",
+                        "A GAAAAAAAG A",
+                        "   AGGBGGA   ",
+                        "   F     F   ",
+                        "   F     F   ",
+                        "   F     F   ",
+                        "   AHHHHHA   ",
+                        "A GGBGBBBBG A",
+                        " AAAAAAAAAAA "
+                    },{
+                        " AAAAAAAAAAA ",
+                        "A DAAAAAAAD A",
+                        "  DDAGBGADD  ",
+                        "    F   F    ",
+                        "    F   F    ",
+                        "    F   F    ",
+                        "  DDAHHHADD  ",
+                        "A DGBGGGGBD A",
+                        " AAAAAAAAAAA "
+                    },{
+                        "  AAAAAAAAA  ",
+                        " A AAAAAAA A ",
+                        "C  BDAAADB  C",
+                        "C  B FFF B  C",
+                        "C  B FFF B  C",
+                        "C  B FFF B  C",
+                        "C  BDAAADB  C",
+                        " A BBGGGGB A ",
+                        "  AAAAAAAAA  "
+                    },{
+                        "  AAAAAAAAA  ",
+                        " A  DGGGD  A ",
+                        "    D   D    ",
+                        "             ",
+                        "             ",
+                        "             ",
+                        "    D   D    ",
+                        " A  DGGGD  A ",
+                        "  AAAAAAAAA  "
+                    },{
+                        "    AAAAA    ",
+                        "  AA     AA  ",
+                        "             ",
+                        "             ",
+                        "             ",
+                        "             ",
+                        "             ",
+                        "  AA     AA  ",
+                        "    AAAAA    "
+                    },{
+                        "             ",
+                        "    AAAAA    ",
+                        "   C     C   ",
+                        "   C     C   ",
+                        "   C     C   ",
+                        "   C     C   ",
+                        "   C     C   ",
+                        "    AAAAA    ",
+                        "             "
                     }})
                     // spotless:on
                 .addShape(
@@ -141,20 +261,57 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
                     }})
                     // spotless:on
                 .addElement(
-                    'B',
+                    'A',
                     buildHatchAdder(MTESLICE.class)
                         .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Maintenance, Energy.or(ExoticEnergy))
                         .casingIndex(Casings.RadiantNaquadahAlloyCasing.textureId)
                         .hint(1)
                         .buildAndChain(
                             onElementPass(MTESLICE::onCasingAdded, Casings.RadiantNaquadahAlloyCasing.asElement())))
-                .addElement('A', chainAllGlasses())
-                .addElement('C', ofFrame(Materials.Steel))
-                .addElement('D', Casings.InfinityCooledCasing.asElement())
-                .addElement('E', Casings.MiningNeutroniumCasing.asElement())
+                .addElement('B', Casings.AdvancedComputerCasing.asElement())
+                .addElement('C', ofFrame(Materials.BlackPlutonium))
+                .addElement('D', ofFrame(Materials.InfinityCatalyst))
+                .addElement('E', ofFrame(Materials.CosmicNeutronium))
+                .addElement('F', Casings.NanochipComplexGlass.asElement())
+                .addElement('G', Casings.HeatResistantTriniumPlatedCasing.asElement())
+                .addElement('H', ofBlock(GregTechAPI.sLaserRender, 0))
+                .addElement(
+                    'I',
+                    buildHatchAdder(MTESLICE.class).anyOf(LaserSource)
+                        .adder(MTESLICE::addLaserSource)
+                        .casingIndex(Casings.RadiantNaquadahAlloyCasing.textureId)
+                        .hint(2)
+                        .build())
                 .build();
         }
         return STRUCTURE_DEFINITION;
+    }
+
+    // copied from HILE
+    private boolean addLaserSource(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        if (aTileEntity != null) {
+            final IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+            if (aMetaTileEntity instanceof MTEHatchDynamoTunnel) {
+                laserSource = (MTEHatchDynamoTunnel) aMetaTileEntity;
+                laserSource.updateTexture(aBaseCasingIndex);
+                // Snap the laser source toward the plate. Player can rotate it if they want after but this will look
+                // nicer
+                switch (getRotation()) {
+                    case NORMAL -> laserSource.getBaseMetaTileEntity()
+                        .setFrontFacing(ForgeDirection.DOWN);
+                    case UPSIDE_DOWN -> laserSource.getBaseMetaTileEntity()
+                        .setFrontFacing(ForgeDirection.UP);
+                    case CLOCKWISE -> laserSource.getBaseMetaTileEntity()
+                        .setFrontFacing(getDirection().getRotation(ForgeDirection.UP));
+                    default -> laserSource.getBaseMetaTileEntity()
+                        .setFrontFacing(getDirection().getRotation(ForgeDirection.DOWN));
+                }
+                laserAmps = (int) laserSource.maxAmperesOut();
+                laserTier = (int) laserSource.getOutputTier();
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -177,7 +334,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
     protected MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType("SLICE")
-            .addBulkMachineInfo(1, 1F, 1F)
+            .addBulkMachineInfo(4, 3F, 0.85F)
             .beginStructureBlock(3, 5, 3, true)
             .addController("Front center, 3rd layer")
             .addCasing("14-22", "Reinforced Wooden Casing", false)
@@ -189,21 +346,47 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
             .addInputHatch("1+", "Any casing", 1)
             .addOutputHatch("1+", "Any casing", 1)
             .addStructureInfo("")
-            .addSubChannel(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;
     }
 
     @Override
     protected ProcessingLogic createProcessingLogic() {
-        return new ProcessingLogic().setEuModifier(EU_EFFICIENCY)
-            .setSpeedBonus(1F / SPEED)
+        return new ProcessingLogic().setEuModifier(getCurrentEUEfficiency())
+            .setSpeedBonus(1F / getCurrentSpeed())
             .setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    private int getCurrentParallelPerTier() {
+        int CURRENT_PARALLEL_PER_TIER = BASE_PARALLEL_PER_TIER;
+        if (mtier == 1) {
+            // add log4(Amp) to parallel
+            CURRENT_PARALLEL_PER_TIER += (int) (Math.log(laserAmps) / Math.log(4));
+        }
+        return CURRENT_PARALLEL_PER_TIER;
+    }
+
+    private float getCurrentSpeed() {
+        float CURRENT_SPEED = BASE_SPEED;
+        if (mtier == 1) {
+            // add tier/4 to speed
+            CURRENT_SPEED += (laserTier / 4);
+        }
+        return CURRENT_SPEED;
+    }
+
+    private float getCurrentEUEfficiency() {
+        float CURRENT_EU_EFFICIENCY = BASE_EU_EFFICIENCY;
+        if (mtier == 1) {
+            // minus tier/100 to eu efficiency
+            CURRENT_EU_EFFICIENCY -= (laserTier / 100);
+        }
+        return CURRENT_EU_EFFICIENCY;
     }
 
     @Override
     public int getMaxParallelRecipes() {
-        return (PARALLEL_PER_TIER * GTUtility.getTier(this.getMaxInputVoltage()));
+        return (getCurrentParallelPerTier() * GTUtility.getTier(this.getMaxInputVoltage()));
     }
 
     private int casingAmount;
@@ -281,10 +464,13 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
         }
 
         if ("tier1".equals(CurrentTier)) {
+            mtier = 1;
             if (!checkPiece(CurrentTier, OFFSET_X1, OFFSET_Y1, OFFSET_Z1, errors)) return;
         } else if ("tier2".equals(CurrentTier)) {
+            mtier = 2;
             if (!checkPiece(CurrentTier, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, errors)) return;
         } else {
+            mtier = 3;
             if (!checkPiece(CurrentTier, OFFSET_X3, OFFSET_Y3, OFFSET_Z3, errors)) return;
         }
 
