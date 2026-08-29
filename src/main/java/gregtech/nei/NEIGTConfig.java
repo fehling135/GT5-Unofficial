@@ -156,6 +156,7 @@ public class NEIGTConfig implements IConfigureNEI {
             GregtechItemList.Industrial_CuttingFactoryController.get(1),
             RecipeMaps.cutterFakeRecipes.unlocalizedName);
         API.addRecipeCatalyst(ItemList.IndustrialCuttingMachine.get(1), RecipeMaps.cutterFakeRecipes.unlocalizedName);
+        API.addRecipeCatalyst(ItemList.Machine_Multi_SLICE.get(1), RecipeMaps.cutterFakeRecipes.unlocalizedName);
     }
 
     private void registerItemEntries() {

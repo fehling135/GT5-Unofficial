@@ -28,14 +28,15 @@ import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.ICasingTextureProvider;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTRecipe;
@@ -43,7 +44,8 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
 
-public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implements ISurvivalConstructable {
+public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
+    implements ISurvivalConstructable, ICasingTextureProvider {
 
     private static IStructureDefinition<MTESLICE> STRUCTURE_DEFINITION = null;
 
@@ -51,7 +53,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
     private static final String tier2 = "tier2";
     private static final String tier3 = "tier3";
 
-    private byte mtier = 1;
+    private byte mTier = 1;
 
     private static final int OFFSET_X1 = 6;
     private static final int OFFSET_X2 = 1;
@@ -62,6 +64,8 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
     private static final int OFFSET_Z1 = 0;
     private static final int OFFSET_Z2 = 0;
     private static final int OFFSET_Z3 = 0;
+
+    private int casingAmount;
 
     private static final int BASE_PARALLEL_PER_TIER = 4;
     private static final float BASE_SPEED = 3f;
@@ -275,7 +279,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
                 .addElement(
                     'A',
                     buildHatchAdder(MTESLICE.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Energy, MultiAmpEnergy)
+                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Maintenance, Energy, MultiAmpEnergy)
                         .casingIndex(Casings.RadiantNaquadahAlloyCasing.textureId)
                         .hint(1)
                         .buildAndChain(
@@ -329,18 +333,20 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Casings.RadiantNaquadahAlloyCasing.getCasingTexture(),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_MULTI_BREWERY_ACTIVE)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Casings.RadiantNaquadahAlloyCasing.getCasingTexture(), TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_MULTI_BREWERY)
-                .extFacing()
-                .build() };
-        }
-        return new ITexture[] { Casings.RadiantNaquadahAlloyCasing.getCasingTexture() };
+        return Textures.BlockIcons.createTextureWithCasing(
+            this,
+            side,
+            aFacing,
+            aActive,
+            OVERLAY_FRONT_MULTI_AUTOCLAVE,
+            OVERLAY_FRONT_MULTI_AUTOCLAVE_GLOW,
+            OVERLAY_FRONT_MULTI_AUTOCLAVE_ACTIVE,
+            OVERLAY_FRONT_MULTI_AUTOCLAVE_ACTIVE_GLOW);
+    }
+
+    @Override
+    public ITexture getCasingTexture() {
+        return Casings.RadiantNaquadahAlloyCasing.getCasingTexture();
     }
 
     protected MultiblockTooltipBuilder createTooltip() {
@@ -355,6 +361,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
             .addEnergyHatch("1", "Any casing", 1)
             .addInputBus("1+", "Any casing", 1)
             .addInputHatch("1+", "Any casing", 1)
+            .addMaintenanceHatch("1", "Any casing", 1)
             .addOutputHatch("1+", "Any casing", 1)
             .addStructureInfo("")
             .toolTipFinisher();
@@ -399,7 +406,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
 
     private int getCurrentParallelPerTier() {
         int CURRENT_PARALLEL_PER_TIER = BASE_PARALLEL_PER_TIER;
-        if (mtier == 1) {
+        if (mTier == 1) {
             // add log4(Amp) to parallel
             CURRENT_PARALLEL_PER_TIER += (int) (Math.log(laserAmps) / Math.log(4));
         }
@@ -408,7 +415,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
 
     private float getCurrentSpeed() {
         float CURRENT_SPEED = BASE_SPEED;
-        if (mtier == 1) {
+        if (mTier == 1) {
             // add tier/4 to speed
             CURRENT_SPEED += (laserTier / 4);
         }
@@ -417,7 +424,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
 
     private float getCurrentEUEfficiency() {
         float CURRENT_EU_EFFICIENCY = BASE_EU_EFFICIENCY;
-        if (mtier == 1) {
+        if (mTier == 1) {
             // minus tier/100 to eu efficiency
             CURRENT_EU_EFFICIENCY -= (laserTier / 100);
         }
@@ -428,8 +435,6 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
     public int getMaxParallelRecipes() {
         return (getCurrentParallelPerTier() * GTUtility.getTier(this.getMaxInputVoltage()));
     }
-
-    private int casingAmount;
 
     private void onCasingAdded() {
         casingAmount++;
@@ -449,10 +454,9 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        int built = 0;
         if (mMachine) return -1;
         if (stackSize.stackSize == 1) {
-            built += survivalBuildPiece(
+            return survivalBuildPiece(
                 tier1,
                 stackSize,
                 OFFSET_X1,
@@ -463,7 +467,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
                 false,
                 true);
         } else if (stackSize.stackSize == 2) {
-            built += survivalBuildPiece(
+            return survivalBuildPiece(
                 tier2,
                 stackSize,
                 OFFSET_X2,
@@ -474,7 +478,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
                 false,
                 true);
         } else {
-            built += survivalBuildPiece(
+            return survivalBuildPiece(
                 tier3,
                 stackSize,
                 OFFSET_X3,
@@ -485,33 +489,30 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
                 false,
                 true);
         }
-        return built;
     }
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         casingAmount = 0;
-        String CurrentTier = "tier1";
-        if (aStack != null) {
-            if (aStack.isItemEqual(ItemList.EnergisedTesseract.get(1))) {
-                CurrentTier = "tier2";
-            } else if (aStack.isItemEqual(ItemList.Transdimensional_Alignment_Matrix.get(1))) {
-                CurrentTier = "tier3";
+        if (aStack == null) {
+            mTier = 1;
+        } else {
+            if (GTUtility.areStacksEqual(aStack, ItemList.EnergisedTesseract.get(1))) {
+                mTier = 2;
+            } else if (GTUtility.areStacksEqual(aStack, ItemList.Transdimensional_Alignment_Matrix.get(1))) {
+                mTier = 3;
             } else {
                 errors.add(StructureErrors.of("GT5U.gui.text.structure_error.wrong_SLICE_itemslot"));
                 return;
             }
         }
 
-        if ("tier1".equals(CurrentTier)) {
-            mtier = 1;
-            if (!checkPiece(CurrentTier, OFFSET_X1, OFFSET_Y1, OFFSET_Z1, errors)) return;
-        } else if ("tier2".equals(CurrentTier)) {
-            mtier = 2;
-            if (!checkPiece(CurrentTier, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, errors)) return;
+        if (mTier == 1) {
+            if (!checkPiece("tier1", OFFSET_X1, OFFSET_Y1, OFFSET_Z1, errors)) return;
+        } else if (mTier == 2) {
+            if (!checkPiece("tier2", OFFSET_X2, OFFSET_Y2, OFFSET_Z2, errors)) return;
         } else {
-            mtier = 3;
-            if (!checkPiece(CurrentTier, OFFSET_X3, OFFSET_Y3, OFFSET_Z3, errors)) return;
+            if (!checkPiece("tier3", OFFSET_X3, OFFSET_Y3, OFFSET_Z3, errors)) return;
         }
 
         checkCasingMin(errors, casingAmount, 6);
