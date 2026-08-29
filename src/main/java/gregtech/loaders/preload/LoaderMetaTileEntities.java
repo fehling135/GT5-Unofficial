@@ -237,6 +237,7 @@ import gregtech.common.tileentities.machines.multi.MTEPlasmaForge;
 import gregtech.common.tileentities.machines.multi.MTEPyrolyseOven;
 import gregtech.common.tileentities.machines.multi.MTEPyrolyseOvenLegacy;
 import gregtech.common.tileentities.machines.multi.MTEResearchCompleter;
+import gregtech.common.tileentities.machines.multi.MTESLICE;
 import gregtech.common.tileentities.machines.multi.MTESolarFactory;
 import gregtech.common.tileentities.machines.multi.MTESpinmatron;
 import gregtech.common.tileentities.machines.multi.MTEThermalBoiler;
@@ -969,6 +970,9 @@ public class LoaderMetaTileEntities implements Runnable { // TODO CHECK CIRCUIT 
                 IndustrialCuttingMachine.ID,
                 "industrialcuttingmachine.controller.tier.01",
                 "Industrial Cutting Factory").getStackForm(1L));
+
+        ItemList.Machine_Multi_SLICE
+            .set(new MTESLICE(SLICE_CONTROLLER.ID, "SLICE.controller.tier.single", "S.L.I.C.E").getStackForm(1));
 
         ItemList.IndustrialFormingPress.set(
             new MTEIndustrialFormingPress(

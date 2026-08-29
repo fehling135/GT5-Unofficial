@@ -2833,6 +2833,7 @@ GT5U.gui.text.structure_error.energy_hatch_not_needed=Energy Hatches are not nee
 GT5U.gui.text.structure_error.one_energy_hatch_on_laser=Only one energy hatch if using Multi-Amp or Laser Hatches
 GT5U.gui.text.structure_error.unknown_multiblock_tier=Unknown multiblock tier
 GT5U.gui.text.structure_error.missing_nanite=Missing Nanite in controller slot
+GT5U.gui.text.structure_error.wrong_SLICE_itemslot=Wrong Item in controller slot
 GT5U.gui.text.structure_error.unknown_machine_casing_tier=Unable to determine machine casing tier
 GT5U.gui.text.structure_error.too_many_radiation_hatch=Too many radiation hatch
 GT5U.gui.text.structure_error.glass_tier_not_enough=Glass tier too low, required %s-tiered glass
