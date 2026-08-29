@@ -6,10 +6,18 @@ import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.util.GTStructureUtility.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -30,6 +38,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrors;
+import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
@@ -61,6 +70,9 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
     private MTEHatchDynamoTunnel laserSource = null;
     private int laserAmps = 1;
     private int laserTier = 0;
+
+    private final int MACHINEMODE_CUTTER = 0;
+    private final int MACHINEMODE_LASER_ENGRAVER = 1;
 
     public MTESLICE(final int aID, final String aName, final String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -263,7 +275,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
                 .addElement(
                     'A',
                     buildHatchAdder(MTESLICE.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Maintenance, Energy.or(ExoticEnergy))
+                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Energy, MultiAmpEnergy)
                         .casingIndex(Casings.RadiantNaquadahAlloyCasing.textureId)
                         .hint(1)
                         .buildAndChain(
@@ -333,15 +345,14 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
 
     protected MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType("SLICE")
+        tt.addMachineType("Laser Engraver, Cutting Machine, S.L.I.C.E")
             .addBulkMachineInfo(4, 3F, 0.85F)
             .beginStructureBlock(3, 5, 3, true)
             .addController("Front center, 3rd layer")
             .addCasing("14-22", "Reinforced Wooden Casing", false)
             .addCasing("6", "Any Tiered Glass", false)
             .addCasing("4", "Steel Frame Box", false)
-            .addEnergyHatch("1+", "Any casing", 1)
-            .addMaintenanceHatch("1", "Any casing", 1)
+            .addEnergyHatch("1", "Any casing", 1)
             .addInputBus("1+", "Any casing", 1)
             .addInputHatch("1+", "Any casing", 1)
             .addOutputHatch("1+", "Any casing", 1)
@@ -352,7 +363,36 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
 
     @Override
     protected ProcessingLogic createProcessingLogic() {
-        return new ProcessingLogic().setEuModifier(getCurrentEUEfficiency())
+        return new ProcessingLogic() {
+
+            private int lastMode = -1;
+
+            @NotNull
+            @Override
+            protected Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
+                int mode = getModeFromCircuit(inputItems);
+
+                if (mode == -1) {
+                    lastMode = -1;
+                    return Stream.empty();
+                }
+                if (!(mode == lastMode)) {
+                    lastRecipe = null;
+                    lastMode = mode;
+                }
+                switch (mode) {
+                    case MACHINEMODE_CUTTER -> {
+                        return super.findRecipeMatches(RecipeMaps.cutterRecipes);
+                    }
+                    case MACHINEMODE_LASER_ENGRAVER -> {
+                        return super.findRecipeMatches(RecipeMaps.laserEngraverRecipes);
+                    }
+                    default -> {
+                        return super.findRecipeMatches(null);
+                    }
+                }
+            }
+        }.setEuModifier(getCurrentEUEfficiency())
             .setSpeedBonus(1F / getCurrentSpeed())
             .setMaxParallelSupplier(this::getTrueParallel);
     }
@@ -482,9 +522,24 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE> implement
         checkHasOutputBus(errors);
     }
 
+    @Nonnull
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.cutterRecipes;
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays.asList(RecipeMaps.laserEngraverRecipes, RecipeMaps.cutterRecipes);
+    }
+
+    private int getModeFromCircuit(ItemStack[] t) {
+        for (ItemStack j : t) {
+            if (j.getItem() == GTUtility.getIntegratedCircuit(0)
+                .getItem()) {
+                if (j.getItemDamage() == 15) {
+                    return MACHINEMODE_CUTTER;
+                } else if (j.getItemDamage() <= 16) {
+                    return MACHINEMODE_LASER_ENGRAVER;
+                }
+            }
+        }
+        return -1;
     }
 
     @Override
