@@ -75,7 +75,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
 
     private int casingAmount;
 
-    private static final int BASE_PARALLEL_PER_TIER = 4;
+    private static final int BASE_PARALLEL_PER_TIER = 8;
     private static final float BASE_SPEED = 3f;
     private static final float BASE_EU_EFFICIENCY = 0.85f;
 
@@ -83,8 +83,9 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     private int laserAmps = 0;
     private int laserTier = 0;
 
-    private final int MACHINEMODE_CUTTER = 0;
-    private final int MACHINEMODE_LASER_ENGRAVER = 1;
+    private final byte MACHINEMODE_CUTTER = 0;
+    private final byte MACHINEMODE_LASER_ENGRAVER = 1;
+    private byte currentmode = -1;
 
     private static final long REQUIRED_COMPUTATION_PER_TICK = 1000;
 
@@ -1525,8 +1526,48 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     @Override
     protected MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType("Laser Engraver, Cutting Machine, S.L.I.C.E")
-            .addBulkMachineInfo(4, 3F, 0.85F)
+        tt.addMachineType("Cutting Machine, Laser Engraver, S.L.I.C.E")
+            .addBulkMachineInfo(8, 3F, 0.85F)
+            .addSupportAny()
+            .addInfo(EnumChatFormatting.WHITE + "Use circuit 15 for Cutting and 16 for Laser Engraver")
+            .addSeparator()
+            .addInfo("Tier 1: " + EnumChatFormatting.WHITE + "Laser carving")
+            .addInfo("Etching and cutting with precise laser")
+            .addInfo(
+                "Put a " + EnumChatFormatting.GOLD
+                    + "Carbon Nanite "
+                    + EnumChatFormatting.GRAY
+                    + "into the controller slot to unlock this tier")
+            .addInfo("Overclocks limited to " + EnumChatFormatting.WHITE + "Energy Hatch Tier")
+            .addInfo(
+                "Requires " + EnumChatFormatting.BLUE
+                    + "1000 Computation per Tick "
+                    + EnumChatFormatting.GRAY
+                    + "to operate by default")
+            .addInfo("Laser source hatch provides benefits: ")
+            .addInfo(
+                "Parallels increased by " + EnumChatFormatting.GREEN
+                    + "log4(laser source amperage) "
+                    + EnumChatFormatting.GRAY
+                    + "per voltage tier")
+            .addInfo("(Cutting mode's parallels are cut down by half)")
+            .addInfo("Speed increased by " + EnumChatFormatting.GREEN + "(laser source tier over ZPM) * 100%")
+            .addSeparator()
+            .addInfo("Tier 2: " + EnumChatFormatting.WHITE + "Nanite operating")
+            .addInfo("Operating wafers with programmed nanites")
+            .addInfo(
+                "Put an " + EnumChatFormatting.GOLD
+                    + "Energised Tesseract "
+                    + EnumChatFormatting.GRAY
+                    + "into the controller slot to unlock this tier")
+            .addSeparator()
+            .addInfo("Tier 3: " + EnumChatFormatting.WHITE + "Dimension splitting")
+            .addInfo("Splitting space and lowering dimension")
+            .addInfo(
+                "Put a " + EnumChatFormatting.GOLD
+                    + "Transdimensional Alignment Matrix "
+                    + EnumChatFormatting.GRAY
+                    + "into the controller slot to unlock this tier")
             .beginStructureBlock(12, 9, 12, true)
             .addController("Front center")
             .addEnergyHatch("1", "Any casing", 1)
@@ -1554,12 +1595,12 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     protected ProcessingLogic createProcessingLogic() {
         return new ProcessingLogic() {
 
-            private int lastMode = -1;
+            private byte lastMode = -1;
 
             @NotNull
             @Override
             protected Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
-                int mode = getModeFromCircuit(inputItems);
+                byte mode = getModeFromCircuit(inputItems);
 
                 if (mode == -1) {
                     lastMode = -1;
@@ -1569,6 +1610,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
                     lastRecipe = null;
                     lastMode = mode;
                 }
+                currentmode = mode;
                 switch (mode) {
                     case MACHINEMODE_CUTTER -> {
                         return super.findRecipeMatches(RecipeMaps.cutterRecipes);
@@ -1587,7 +1629,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
             @Override
             protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe)
-                    .setMaxOverclocks(GTUtility.getTier(getAverageInputVoltage()) - GTUtility.getTier(recipe.mEUt) + 1);
+                    .setMaxOverclocks(GTUtility.getTier(getAverageInputVoltage()) - GTUtility.getTier(recipe.mEUt));
             }
         }.setSpeedBonusSupplier(() -> (double) (1F / getCurrentSpeed()))
             .setEuModifier(getCurrentEUEfficiency())
@@ -1598,7 +1640,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     private int getCurrentParallelPerTier() {
         int CURRENT_PARALLEL_PER_TIER = BASE_PARALLEL_PER_TIER;
         if (mTier == 1) {
-            CURRENT_PARALLEL_PER_TIER += (GTUtility.log4ceil(laserAmps) - 2);
+            CURRENT_PARALLEL_PER_TIER += GTUtility.log4ceil(laserAmps);
         }
         return CURRENT_PARALLEL_PER_TIER;
     }
@@ -1606,8 +1648,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     private float getCurrentSpeed() {
         float CURRENT_SPEED = BASE_SPEED;
         if (mTier == 1) {
-            CURRENT_SPEED += (float) (Math.max(1, laserTier - 7));
-            CURRENT_SPEED -= 1F;
+            CURRENT_SPEED += (float) (Math.max(0, laserTier - 7));
         }
         return CURRENT_SPEED;
     }
@@ -1619,7 +1660,11 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
 
     @Override
     public int getMaxParallelRecipes() {
-        return (getCurrentParallelPerTier() * GTUtility.getTier(this.getMaxInputVoltage()));
+        int MaxParallelRecipes = getCurrentParallelPerTier() * GTUtility.getTier(this.getMaxInputVoltage());
+        if (currentmode == MACHINEMODE_CUTTER) {
+            MaxParallelRecipes /= 2;
+        }
+        return MaxParallelRecipes;
     }
 
     private void onCasingAdded() {
@@ -1700,16 +1745,16 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
         }
 
         else if (GTUtility.areStacksEqual(aStack, ItemList.EnergisedTesseract.get(1))) {
-                mTier = 2;
-                if (!checkPiece(tier2, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, errors)) return;
-                checkCasingMin(errors, casingAmount, 200);
-            }
+            mTier = 2;
+            if (!checkPiece(tier2, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, errors)) return;
+            checkCasingMin(errors, casingAmount, 200);
+        }
 
         else if (GTUtility.areStacksEqual(aStack, ItemList.Transdimensional_Alignment_Matrix.get(1))) {
-                mTier = 3;
-                if (!checkPiece(tier3, OFFSET_X3, OFFSET_Y3, OFFSET_Z3, errors)) return;
-                checkCasingMin(errors, casingAmount, 800);
-            }
+            mTier = 3;
+            if (!checkPiece(tier3, OFFSET_X3, OFFSET_Y3, OFFSET_Z3, errors)) return;
+            checkCasingMin(errors, casingAmount, 800);
+        }
 
         getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
         if (mTier == 0) {
@@ -1731,7 +1776,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
         return Arrays.asList(RecipeMaps.laserEngraverRecipes, RecipeMaps.cutterRecipes);
     }
 
-    private int getModeFromCircuit(ItemStack[] t) {
+    private byte getModeFromCircuit(ItemStack[] t) {
         for (ItemStack j : t) {
             if (j.getItem() == GTUtility.getIntegratedCircuit(0)
                 .getItem()) {
