@@ -1,10 +1,11 @@
-package gregtech.common.tileentities.machines.multi;
+package tectech.thing.metaTileEntity.multi;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.util.GTStructureUtility.*;
+import static tectech.thing.metaTileEntity.multi.base.TTMultiblockBase.HatchElement.InputData;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,20 +38,21 @@ import gregtech.api.interfaces.tileentity.ICasingTextureProvider;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.GregTechTileClientEvents;
-import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.structure.error.ErrorType;
+import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrorRegistry;
-import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.api.util.shutdown.ShutDownReason;
+import gregtech.api.util.shutdown.SimpleShutDownReason;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
+import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
-public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
-    implements ISurvivalConstructable, ICasingTextureProvider {
+public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable, ICasingTextureProvider {
 
     private static IStructureDefinition<MTESLICE> STRUCTURE_DEFINITION = null;
 
@@ -77,11 +79,13 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
     private static final float BASE_EU_EFFICIENCY = 0.85f;
 
     private MTEHatchDynamoTunnel laserSource = null;
-    private int laserAmps = 1;
+    private int laserAmps = 0;
     private int laserTier = 0;
 
     private final int MACHINEMODE_CUTTER = 0;
     private final int MACHINEMODE_LASER_ENGRAVER = 1;
+
+    private static final long REQUIRED_COMPUTATION_PER_TICK = 1000;
 
     public MTESLICE(final int aID, final String aName, final String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -97,7 +101,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
     }
 
     @Override
-    public IStructureDefinition<MTESLICE> getStructureDefinition() {
+    public IStructureDefinition<MTESLICE> getStructure_EM() {
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition.<MTESLICE>builder()
                 .addShape(
@@ -1376,7 +1380,15 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
                 .addElement(
                     'A',
                     buildHatchAdder(MTESLICE.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Maintenance, Energy, MultiAmpEnergy)
+                        .atLeast(
+                            InputBus,
+                            OutputBus,
+                            InputHatch,
+                            OutputHatch,
+                            Maintenance,
+                            Energy,
+                            ExoticEnergy,
+                            InputData)
                         .casingIndex(Casings.RadiantNaquadahAlloyCasing.textureId)
                         .hint(1)
                         .buildAndChain(
@@ -1392,13 +1404,21 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
                     'I',
                     buildHatchAdder(MTESLICE.class).anyOf(LaserSource)
                         .adder(MTESLICE::addLaserSource)
-                        .casingIndex(Casings.RadiantNaquadahAlloyCasing.textureId)
+                        .casingIndex(Casings.AdvancedComputerCasing.textureId)
                         .hint(2)
                         .build())
                 .addElement(
                     'J',
                     buildHatchAdder(MTESLICE.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Maintenance, Energy, ExoticEnergy)
+                        .atLeast(
+                            InputBus,
+                            OutputBus,
+                            InputHatch,
+                            OutputHatch,
+                            Maintenance,
+                            Energy,
+                            ExoticEnergy,
+                            InputData)
                         .casingIndex(Casings.AdvancedIridiumPlatedMachineCasing.textureId)
                         .hint(1)
                         .buildAndChain(
@@ -1413,7 +1433,15 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
                 .addElement(
                     'P',
                     buildHatchAdder(MTESLICE.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Maintenance, Energy, ExoticEnergy)
+                        .atLeast(
+                            InputBus,
+                            OutputBus,
+                            InputHatch,
+                            OutputHatch,
+                            Maintenance,
+                            Energy,
+                            ExoticEnergy,
+                            InputData)
                         .casingIndex(Casings.ExtremeDensitySpaceBendingCasing.textureId)
                         .hint(1)
                         .buildAndChain(
@@ -1438,8 +1466,6 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
             if (aMetaTileEntity instanceof MTEHatchDynamoTunnel) {
                 laserSource = (MTEHatchDynamoTunnel) aMetaTileEntity;
                 laserSource.updateTexture(aBaseCasingIndex);
-                // Snap the laser source toward the plate. Player can rotate it if they want after but this will look
-                // nicer
                 switch (getRotation()) {
                     case NORMAL -> laserSource.getBaseMetaTileEntity()
                         .setFrontFacing(ForgeDirection.DOWN);
@@ -1472,7 +1498,6 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
             OVERLAY_FRONT_MULTI_AUTOCLAVE_ACTIVE_GLOW);
     }
 
-    @Override
     public ITexture getCasingTexture() {
         return Textures.BlockIcons.getCasingTextureForId(getIndex(mTier));
     }
@@ -1496,6 +1521,7 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
         }
     }
 
+    @Override
     protected MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType("Laser Engraver, Cutting Machine, S.L.I.C.E")
@@ -1554,15 +1580,15 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
                     }
                 }
             }
-        }.setEuModifier(getCurrentEUEfficiency())
-            .setSpeedBonus(1F / getCurrentSpeed())
+        }.setSpeedBonusSupplier(() -> (double) getCurrentSpeed())
+            .setEuModifier(getCurrentEUEfficiency()) 
             .setMaxParallelSupplier(this::getTrueParallel);
+
     }
 
     private int getCurrentParallelPerTier() {
         int CURRENT_PARALLEL_PER_TIER = BASE_PARALLEL_PER_TIER;
         if (mTier == 1) {
-            // add log4(Amp)-4 to parallel
             CURRENT_PARALLEL_PER_TIER += ((int) (Math.log(laserAmps) / Math.log(4)) - 4);
         }
         return CURRENT_PARALLEL_PER_TIER;
@@ -1571,18 +1597,14 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
     private float getCurrentSpeed() {
         float CURRENT_SPEED = BASE_SPEED;
         if (mTier == 1) {
-            // add tier/4 to speed
-            CURRENT_SPEED += (laserTier / 4);
+            CURRENT_SPEED += (float) (Math.max(1, laserTier - 7));
+            CURRENT_SPEED -= 1F;
         }
         return CURRENT_SPEED;
     }
 
     private float getCurrentEUEfficiency() {
         float CURRENT_EU_EFFICIENCY = BASE_EU_EFFICIENCY;
-        if (mTier == 1) {
-            // minus tier/100 to eu efficiency
-            CURRENT_EU_EFFICIENCY -= (laserTier / 100);
-        }
         return CURRENT_EU_EFFICIENCY;
     }
 
@@ -1662,10 +1684,11 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         casingAmount = 0;
 
-        if (aStack == null && checkPiece(tier1, OFFSET_X1, OFFSET_Y1, OFFSET_Z1, null)) {
-            mTier = 1;
-            checkCasingMin(errors, casingAmount, 330);
-        }
+        if (GTUtility.areStacksEqual(aStack, Materials.Carbon.getNanite(1)) 
+            && checkPiece(tier1, OFFSET_X1, OFFSET_Y1, OFFSET_Z1, null)) {
+                mTier = 1;
+                checkCasingMin(errors, casingAmount, 330);
+            }
 
         else if (GTUtility.areStacksEqual(aStack, ItemList.EnergisedTesseract.get(1))
             && checkPiece(tier2, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, null)) {
@@ -1678,15 +1701,15 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
                 mTier = 3;
                 checkCasingMin(errors, casingAmount, 800);
             }
+        
         getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
         if (mTier == 0) {
             errors.add(StructureErrorRegistry.UNKNOWN_TIER);
             return;
         }
 
-        int ehatchcount = mEnergyHatches.size() + mExoticEnergyHatches.size();
-        if (ehatchcount != 1) {
-            errors.add(StructureErrors.hatchCount(ErrorType.TOO_MANY, Energy, ehatchcount, 1));
+        if (eInputData.isEmpty()) {
+            errors.add(StructureErrorRegistry.MISSING_DATA_HATCH);
         }
         checkHasMaintenanceHatch(errors);
         checkHasInputBus(errors);
@@ -1711,6 +1734,32 @@ public class MTESLICE extends MTEExtendedPowerMultiBlockBase<MTESLICE>
             }
         }
         return -1;
+    }
+
+    @Override
+    protected CheckRecipeResult checkProcessing_EM() {
+        CheckRecipeResult result = super.checkProcessing_EM();
+        if (!result.wasSuccessful()) {
+            return result;
+        }
+
+        this.eRequiredData = REQUIRED_COMPUTATION_PER_TICK;
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    @Override
+    public boolean onRunningTick(ItemStack aStack) {
+        if (eAvailableData < REQUIRED_COMPUTATION_PER_TICK) {
+            stopMachine(SimpleShutDownReason.ofCritical("insufficient_computation"));
+            return false;
+        }
+
+        return super.onRunningTick(aStack);
+    }
+
+    @Override
+    public void stopMachine(@Nonnull ShutDownReason reason) {
+        super.stopMachine(reason);
     }
 
     @Override

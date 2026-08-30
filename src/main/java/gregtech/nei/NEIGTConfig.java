@@ -54,6 +54,7 @@ import gregtech.nei.dumper.TurbineRotorDumper;
 import gregtech.nei.dumper.VoidProtectionSupportDumper;
 import gregtech.nei.searchprovider.ChemicalFormulaFilter;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
+import tectech.thing.CustomItemList;
 
 public class NEIGTConfig implements IConfigureNEI {
 
@@ -156,7 +157,7 @@ public class NEIGTConfig implements IConfigureNEI {
             GregtechItemList.Industrial_CuttingFactoryController.get(1),
             RecipeMaps.cutterFakeRecipes.unlocalizedName);
         API.addRecipeCatalyst(ItemList.IndustrialCuttingMachine.get(1), RecipeMaps.cutterFakeRecipes.unlocalizedName);
-        API.addRecipeCatalyst(ItemList.Machine_Multi_SLICE.get(1), RecipeMaps.cutterFakeRecipes.unlocalizedName);
+        API.addRecipeCatalyst(CustomItemList.Machine_Multi_SLICE.get(1), RecipeMaps.cutterFakeRecipes.unlocalizedName);
     }
 
     private void registerItemEntries() {

@@ -1526,8 +1526,6 @@ public enum ItemList implements IItemContainer {
     Spinmatron_Casing,
     Spinmatron_Chamber_Grate,
 
-    Machine_Multi_SLICE,
-
     Machine_Multi_IndustrialLaserEngraver,
     Laser_Plate,
     Casing_Laser,

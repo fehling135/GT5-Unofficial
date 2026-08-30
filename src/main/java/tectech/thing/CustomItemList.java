@@ -306,6 +306,7 @@ public enum CustomItemList implements IItemContainer {
     Machine_Multi_Decay,
     Machine_Multi_Annihilation,
     Machine_Multi_EyeOfHarmony,
+    Machine_Multi_SLICE,
     Machine_Multi_ForgeOfGods,
     Machine_Multi_SmeltingModule,
     Machine_Multi_MoltenModule,
