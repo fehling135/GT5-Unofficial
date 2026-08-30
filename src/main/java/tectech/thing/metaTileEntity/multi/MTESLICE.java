@@ -1581,7 +1581,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
                 }
             }
         }.setSpeedBonusSupplier(() -> (double) getCurrentSpeed())
-            .setEuModifier(getCurrentEUEfficiency()) 
+            .setEuModifier(getCurrentEUEfficiency())
             .setMaxParallelSupplier(this::getTrueParallel);
 
     }
@@ -1684,11 +1684,11 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         casingAmount = 0;
 
-        if (GTUtility.areStacksEqual(aStack, Materials.Carbon.getNanite(1)) 
+        if (GTUtility.areStacksEqual(aStack, Materials.Carbon.getNanite(1))
             && checkPiece(tier1, OFFSET_X1, OFFSET_Y1, OFFSET_Z1, null)) {
-                mTier = 1;
-                checkCasingMin(errors, casingAmount, 330);
-            }
+            mTier = 1;
+            checkCasingMin(errors, casingAmount, 330);
+        }
 
         else if (GTUtility.areStacksEqual(aStack, ItemList.EnergisedTesseract.get(1))
             && checkPiece(tier2, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, null)) {
@@ -1701,7 +1701,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
                 mTier = 3;
                 checkCasingMin(errors, casingAmount, 800);
             }
-        
+
         getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
         if (mTier == 0) {
             errors.add(StructureErrorRegistry.UNKNOWN_TIER);
