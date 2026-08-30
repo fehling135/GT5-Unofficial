@@ -47,6 +47,7 @@ import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.api.util.OverclockCalculator;
 import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.api.util.shutdown.SimpleShutDownReason;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
@@ -1580,7 +1581,15 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
                     }
                 }
             }
-        }.setSpeedBonusSupplier(() -> (double) getCurrentSpeed())
+
+            // capped OC
+            @NotNull
+            @Override
+            protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe)
+                    .setMaxOverclocks(GTUtility.getTier(getAverageInputVoltage()) - GTUtility.getTier(recipe.mEUt) + 1);
+            }
+        }.setSpeedBonusSupplier(() -> (double) (1F / getCurrentSpeed()))
             .setEuModifier(getCurrentEUEfficiency())
             .setMaxParallelSupplier(this::getTrueParallel);
 
@@ -1589,7 +1598,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     private int getCurrentParallelPerTier() {
         int CURRENT_PARALLEL_PER_TIER = BASE_PARALLEL_PER_TIER;
         if (mTier == 1) {
-            CURRENT_PARALLEL_PER_TIER += ((int) (Math.log(laserAmps) / Math.log(4)) - 4);
+            CURRENT_PARALLEL_PER_TIER += (GTUtility.log4ceil(laserAmps) - 2);
         }
         return CURRENT_PARALLEL_PER_TIER;
     }
@@ -1684,21 +1693,21 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         casingAmount = 0;
 
-        if (GTUtility.areStacksEqual(aStack, Materials.Carbon.getNanite(1))
-            && checkPiece(tier1, OFFSET_X1, OFFSET_Y1, OFFSET_Z1, null)) {
+        if (GTUtility.areStacksEqual(aStack, Materials.Carbon.getNanite(1))) {
             mTier = 1;
+            if (!checkPiece(tier1, OFFSET_X1, OFFSET_Y1, OFFSET_Z1, errors)) return;
             checkCasingMin(errors, casingAmount, 330);
         }
 
-        else if (GTUtility.areStacksEqual(aStack, ItemList.EnergisedTesseract.get(1))
-            && checkPiece(tier2, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, null)) {
+        else if (GTUtility.areStacksEqual(aStack, ItemList.EnergisedTesseract.get(1))) {
                 mTier = 2;
+                if (!checkPiece(tier2, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, errors)) return;
                 checkCasingMin(errors, casingAmount, 200);
             }
 
-        else if (GTUtility.areStacksEqual(aStack, ItemList.Transdimensional_Alignment_Matrix.get(1))
-            && checkPiece(tier3, OFFSET_X3, OFFSET_Y3, OFFSET_Z3, null)) {
+        else if (GTUtility.areStacksEqual(aStack, ItemList.Transdimensional_Alignment_Matrix.get(1))) {
                 mTier = 3;
+                if (!checkPiece(tier3, OFFSET_X3, OFFSET_Y3, OFFSET_Z3, errors)) return;
                 checkCasingMin(errors, casingAmount, 800);
             }
 
