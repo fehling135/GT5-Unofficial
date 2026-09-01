@@ -1527,8 +1527,10 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
     protected MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType("Cutting Machine, Laser Engraver, S.L.I.C.E")
+            .addInfo("Spatial / Laser Industrial Cutter & Engraver")
             .addBulkMachineInfo(8, 3F, 0.85F)
             .addSupportAny()
+            .addUnlimitedTierSkips()
             .addInfo(EnumChatFormatting.WHITE + "Use circuit 15 for Cutting and 16 for Laser Engraver")
             .addSeparator()
             .addInfo("Tier 1: " + EnumChatFormatting.WHITE + "Laser carving")
@@ -1556,8 +1558,8 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
             .addInfo("Tier 2: " + EnumChatFormatting.WHITE + "Nanite operating")
             .addInfo("Operating wafers with programmed nanites")
             .addInfo(
-                "Put an " + EnumChatFormatting.GOLD
-                    + "Energised Tesseract "
+                "Put a " + EnumChatFormatting.GOLD
+                    + "Transcendent Metal Nanite "
                     + EnumChatFormatting.GRAY
                     + "into the controller slot to unlock this tier")
             .addSeparator()
@@ -1744,7 +1746,7 @@ public class MTESLICE extends TTMultiblockBase implements ISurvivalConstructable
             checkCasingMin(errors, casingAmount, 330);
         }
 
-        else if (GTUtility.areStacksEqual(aStack, ItemList.EnergisedTesseract.get(1))) {
+        else if (GTUtility.areStacksEqual(aStack, Materials.TranscendentMetal.getNanite(1))) {
             mTier = 2;
             if (!checkPiece(tier2, OFFSET_X2, OFFSET_Y2, OFFSET_Z2, errors)) return;
             checkCasingMin(errors, casingAmount, 200);
