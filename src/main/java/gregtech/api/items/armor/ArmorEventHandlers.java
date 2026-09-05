@@ -7,13 +7,17 @@ import java.util.ListIterator;
 import java.util.WeakHashMap;
 
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
@@ -192,6 +196,65 @@ public class ArmorEventHandlers {
                 }
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onLivingHurt(LivingHurtEvent event) {
+        if (event.entityLiving instanceof EntityPlayer player && !player.worldObj.isRemote) {
+            if (event.source.isProjectile() && hasBehavior(player, BehaviorName.PrimalAerImplement)) {
+                event.setCanceled(true);
+            }
+            if (hasBehavior(player, BehaviorName.PrimalTerraImplement)) {
+                player.addPotionEffect(
+                    new PotionEffect(
+                        Potion.regeneration.id,
+                        202,
+                        1 + countBehaviors(player, BehaviorName.PrimalTerraImplement),
+                        true));
+            }
+            if (event.source.getSourceOfDamage() instanceof EntityLivingBase source
+                && hasBehavior(player, BehaviorName.PrimalIgnisImplement)) {
+                source.setFire(5 * countBehaviors(player, BehaviorName.PrimalIgnisImplement));
+            }
+            if (event.source.getSourceOfDamage() instanceof EntityLivingBase source
+                && hasBehavior(player, BehaviorName.PrimalPerditioImplement)) {
+                source.addPotionEffect(
+                    new PotionEffect(
+                        Potion.blindness.id,
+                        200 * countBehaviors(player, BehaviorName.PrimalPerditioImplement),
+                        0));
+                source.addPotionEffect(
+                    new PotionEffect(
+                        Potion.moveSlowdown.id,
+                        200 * countBehaviors(player, BehaviorName.PrimalPerditioImplement),
+                        3));
+            }
+        }
+    }
+
+    private boolean hasBehavior(EntityPlayer player, BehaviorName behaviorName) {
+        for (int slot = 0; slot < 4; slot++) {
+            ItemStack armor = player.getCurrentArmor(slot);
+            if (armor == null || !(armor.getItem() instanceof MechArmorBase)) continue;
+            ArmorContext context = MechArmorBase.load(player, armor);
+            if (context.hasBehavior(behaviorName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static int countBehaviors(EntityPlayer player, BehaviorName behaviorName) {
+        int count = 0;
+        for (int slot = 0; slot < 4; slot++) {
+            ItemStack armor = player.getCurrentArmor(slot);
+            if (armor == null || !(armor.getItem() instanceof MechArmorBase)) continue;
+            ArmorContext context = MechArmorBase.load(player, armor);
+            if (context.hasBehavior(behaviorName)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

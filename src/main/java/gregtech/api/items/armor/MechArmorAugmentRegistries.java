@@ -44,6 +44,12 @@ import gregtech.api.items.armor.behaviors.LevitationBehavior;
 import gregtech.api.items.armor.behaviors.MilkInfusionBehavior;
 import gregtech.api.items.armor.behaviors.NightVisionBehavior;
 import gregtech.api.items.armor.behaviors.OmniMovementBehavior;
+import gregtech.api.items.armor.behaviors.PrimalAerImplementBehavior;
+import gregtech.api.items.armor.behaviors.PrimalAquaImplementBehavior;
+import gregtech.api.items.armor.behaviors.PrimalIgnisImplementBehavior;
+import gregtech.api.items.armor.behaviors.PrimalOrdoImplementBehavior;
+import gregtech.api.items.armor.behaviors.PrimalPerditioImplementBehavior;
+import gregtech.api.items.armor.behaviors.PrimalTerraImplementBehavior;
 import gregtech.api.items.armor.behaviors.SoulboundBehavior;
 import gregtech.api.items.armor.behaviors.SpaceSuitBehavior;
 import gregtech.api.items.armor.behaviors.SpeedBoostBehavior;
@@ -51,6 +57,7 @@ import gregtech.api.items.armor.behaviors.StepAssistBehavior;
 import gregtech.api.items.armor.behaviors.SwimSpeedBehavior;
 import gregtech.api.items.armor.behaviors.TerrasteelBehavior;
 import gregtech.api.items.armor.behaviors.VisDiscountBehavior;
+import gregtech.api.items.armor.behaviors.WarpBehavior;
 import gregtech.api.items.armor.behaviors.WaterBreathingBehavior;
 
 public class MechArmorAugmentRegistries {
@@ -633,6 +640,127 @@ public class MechArmorAugmentRegistries {
             .setItemId("augmentmilkinfusion")
             .fitsInto(ArmorType.Helmet)
             .providesBehaviors(MilkInfusionBehavior.INSTANCE)
+            .setMinimumCoreTier(2)
+            .setCategory(AugmentCategory.Utility)
+        ),
+        PrimalAer(ItemList.Augment_PrimalAer, new AugmentBuilder()
+            .setId("PrimalAer")
+            .setItemId("augmentprimalaer")
+            .providesBehaviors(
+                FallProtectionBehavior.INSTANCE,
+                PrimalAerImplementBehavior.INSTANCE,
+                new VisDiscountBehavior(6),
+                new WarpBehavior(10)
+            )
+            .incompatibleAugments(
+                ItemList.Augment_PrimalTerra,
+                ItemList.Augment_PrimalTerra,
+                ItemList.Augment_PrimalAqua,
+                ItemList.Augment_PrimalIgnis,
+                ItemList.Augment_PrimalOrdo,
+                ItemList.Augment_PrimalPerditio
+            )
+            .incompatibleBehaviors(BehaviorName.Jetpack, BehaviorName.CreativeFlight)
+            .setMinimumCoreTier(2)
+            .setCategory(AugmentCategory.Utility)
+        ),
+        PrimalTerra(ItemList.Augment_PrimalTerra, new AugmentBuilder()
+            .setId("PrimalTerra")
+            .setItemId("augmentprimalterra")
+            .providesBehaviors(
+                FallProtectionBehavior.INSTANCE,
+                KnockbackResistBehavior.INSTANCE,
+                PrimalTerraImplementBehavior.INSTANCE,
+                new VisDiscountBehavior(6),
+                new WarpBehavior(10)
+            )
+            .incompatibleAugments(
+                ItemList.Augment_PrimalAer,
+                ItemList.Augment_PrimalAqua,
+                ItemList.Augment_PrimalIgnis,
+                ItemList.Augment_PrimalOrdo,
+                ItemList.Augment_PrimalPerditio
+            )
+            .setMinimumCoreTier(2)
+            .setCategory(AugmentCategory.Utility)
+        ),
+        PrimalAqua(ItemList.Augment_PrimalAqua, new AugmentBuilder()
+            .setId("PrimalAqua")
+            .setItemId("augmentprimalaqua")
+            .providesBehaviors(
+                FallProtectionBehavior.INSTANCE,
+                MilkInfusionBehavior.INSTANCE,
+                WaterBreathingBehavior.INSTANCE,
+                PrimalAquaImplementBehavior.INSTANCE,
+                new VisDiscountBehavior(6),
+                new WarpBehavior(10)
+            )
+            .incompatibleAugments(
+                ItemList.Augment_PrimalAer,
+                ItemList.Augment_PrimalTerra,
+                ItemList.Augment_PrimalIgnis,
+                ItemList.Augment_PrimalOrdo,
+                ItemList.Augment_PrimalPerditio
+            )
+            .setMinimumCoreTier(2)
+            .setCategory(AugmentCategory.Utility)
+        ),
+        PrimalIgnis(ItemList.Augment_PrimalIgnis, new AugmentBuilder()
+            .setId("PrimalIgnis")
+            .setItemId("augmentprimalignis")
+            .providesBehaviors(
+                FallProtectionBehavior.INSTANCE,
+                NightVisionBehavior.INSTANCE,
+                FireImmunityBehavior.INSTANCE,
+                PrimalIgnisImplementBehavior.INSTANCE,
+                new VisDiscountBehavior(6),
+                new WarpBehavior(10)
+            )
+            .incompatibleAugments(
+                ItemList.Augment_PrimalAer,
+                ItemList.Augment_PrimalTerra,
+                ItemList.Augment_PrimalAqua,
+                ItemList.Augment_PrimalOrdo,
+                ItemList.Augment_PrimalPerditio
+            )
+            .setMinimumCoreTier(2)
+            .setCategory(AugmentCategory.Utility)
+        ),
+        PrimalOrdo(ItemList.Augment_PrimalOrdo, new AugmentBuilder()
+            .setId("PrimalOrdo")
+            .setItemId("augmentprimalordo")
+            .providesBehaviors(
+                FallProtectionBehavior.INSTANCE,
+                PrimalOrdoImplementBehavior.INSTANCE,
+                new VisDiscountBehavior(10),
+                new WarpBehavior(5)
+            )
+            .incompatibleAugments(
+                ItemList.Augment_PrimalAer,
+                ItemList.Augment_PrimalTerra,
+                ItemList.Augment_PrimalAqua,
+                ItemList.Augment_PrimalIgnis,
+                ItemList.Augment_PrimalPerditio
+            )
+            .setMinimumCoreTier(2)
+            .setCategory(AugmentCategory.Utility)
+        ),
+        PrimalPerditio(ItemList.Augment_PrimalPerditio, new AugmentBuilder()
+            .setId("PrimalPerditio")
+            .setItemId("augmentprimalperditio")
+            .providesBehaviors(
+                FallProtectionBehavior.INSTANCE,
+                PrimalPerditioImplementBehavior.INSTANCE,
+                new VisDiscountBehavior(6),
+                new WarpBehavior(10)
+            )
+            .incompatibleAugments(
+                ItemList.Augment_PrimalAer,
+                ItemList.Augment_PrimalTerra,
+                ItemList.Augment_PrimalAqua,
+                ItemList.Augment_PrimalIgnis,
+                ItemList.Augment_PrimalOrdo
+            )
             .setMinimumCoreTier(2)
             .setCategory(AugmentCategory.Utility)
         ),
