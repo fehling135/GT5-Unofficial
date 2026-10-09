@@ -45,6 +45,7 @@ import static gregtech.common.items.IDMetaItem03.Circuit_Board_Coated_Basic;
 import static gregtech.common.items.IDMetaItem03.Circuit_Board_Cosmic;
 import static gregtech.common.items.IDMetaItem03.Circuit_Board_Epoxy_Advanced;
 import static gregtech.common.items.IDMetaItem03.Circuit_Board_Exotic;
+import static gregtech.common.items.IDMetaItem03.Circuit_Board_Exotic_Membrane;
 import static gregtech.common.items.IDMetaItem03.Circuit_Board_Fiberglass_Advanced;
 import static gregtech.common.items.IDMetaItem03.Circuit_Board_Multifiberglass_Elite;
 import static gregtech.common.items.IDMetaItem03.Circuit_Board_Optical;
@@ -1220,6 +1221,12 @@ public class MetaGeneratedItem03 extends MetaGeneratedItemX32 implements IItemFi
                     "gt.item.circuit_board.transcendent.tooltip",
                     o))
             .setRender(new InfinityMetaItemRenderer());
+        ItemList.Circuit_Board_Exotic_Membrane.set(
+            addItemWithLocalizationKeys(
+                Circuit_Board_Exotic_Membrane.ID,
+                "gt.item.circuit_board.exotic_membrane.name",
+                "gt.item.circuit_board.exotic_membrane.tooltip",
+                o));
 
         // Optical circuits
         ItemList.Circuit_OpticalProcessor.set(

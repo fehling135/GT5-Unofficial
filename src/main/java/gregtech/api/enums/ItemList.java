@@ -1950,6 +1950,7 @@ public enum ItemList implements IItemContainer {
     Circuit_Board_Exotic,
     Circuit_Board_Cosmic,
     Circuit_Board_Transcendent,
+    Circuit_Board_Exotic_Membrane,
 
     Circuit_Parts_Resistor,
     Circuit_Parts_ResistorSMD,
