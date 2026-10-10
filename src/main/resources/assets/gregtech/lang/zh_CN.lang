@@ -1882,3 +1882,15 @@ Material.plastic.fluidpipe.newname=塑料
 Material.polytetrafluoroethylene.fluidpipe.newname=聚四氟乙烯
 Material.redstone.fluidpipe.newname=高压
 Material.wood.fluidpipe.newname=木
+
+# Exotic circuit parts (metaitem.03)
+gt.item.circuit_board.exotic_membrane.name=异星电路膜
+gt.item.circuit_board.exotic_membrane.tooltip=四维之膜
+gt.item.circuit_crystalperfected_seed.name=光学完美晶种
+gt.item.circuit_crystalperfected_seed.tooltip=无光学缺陷的晶种
+gt.item.circuit_crystalperfected_raw.name=粗制完美晶体
+gt.item.circuit_crystalperfected_raw.tooltip=尚未冷却！
+gt.item.circuit_crystalperfected.name=零熵完美晶体
+gt.item.circuit_crystalperfected.tooltip=绝对零度
+gt.item.circuit_darkmatter_unit.name=暗物质约束场
+gt.item.circuit_darkmatter_unit.tooltip=内含暗物质

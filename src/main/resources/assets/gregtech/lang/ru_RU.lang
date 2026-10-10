@@ -5894,6 +5894,18 @@ gt.item.circuit_board.cosmic.tooltip=Плата, насыщенная космо
 gt.item.circuit_board.transcendent.name=Временно трансцендентная печатная плата
 gt.item.circuit_board.transcendent.tooltip=Плата, искажённая во времени
 
+# Exotic circuit parts
+gt.item.circuit_board.exotic_membrane.name=Мембрана экзотической схемы
+gt.item.circuit_board.exotic_membrane.tooltip=Мембрана четырёх измерений
+gt.item.circuit_crystalperfected_seed.name=Оптически совершенная кристаллическая затравка
+gt.item.circuit_crystalperfected_seed.tooltip=Затравка без оптических дефектов
+gt.item.circuit_crystalperfected_raw.name=Необработанный совершенный кристалл
+gt.item.circuit_crystalperfected_raw.tooltip=Ещё не остыл!
+gt.item.circuit_crystalperfected.name=Совершенный кристалл с нулевой энтропией
+gt.item.circuit_crystalperfected.tooltip=Абсолютный ноль
+gt.item.circuit_darkmatter_unit.name=Сдерживающее поле тёмной материи
+gt.item.circuit_darkmatter_unit.tooltip=Сдерживает тёмную материю
+
 ## Optical Circuits
 gt.item.circuit.optical_processor.name=Оптический процессор
 gt.item.circuit.optical_processor.tooltip=Оптическая электросхема

@@ -90,9 +90,13 @@ import static gregtech.common.items.IDMetaItem03.Circuit_CosmicAssembly;
 import static gregtech.common.items.IDMetaItem03.Circuit_CosmicComputer;
 import static gregtech.common.items.IDMetaItem03.Circuit_CosmicMainframe;
 import static gregtech.common.items.IDMetaItem03.Circuit_CosmicProcessor;
+import static gregtech.common.items.IDMetaItem03.Circuit_CrystalPerfected;
+import static gregtech.common.items.IDMetaItem03.Circuit_CrystalPerfected_Raw;
+import static gregtech.common.items.IDMetaItem03.Circuit_CrystalPerfected_Seed;
 import static gregtech.common.items.IDMetaItem03.Circuit_Crystalcomputer;
 import static gregtech.common.items.IDMetaItem03.Circuit_Crystalmainframe;
 import static gregtech.common.items.IDMetaItem03.Circuit_Crystalprocessor;
+import static gregtech.common.items.IDMetaItem03.Circuit_DarkMatter_Unit;
 import static gregtech.common.items.IDMetaItem03.Circuit_Elitenanocomputer;
 import static gregtech.common.items.IDMetaItem03.Circuit_ExoticAssembly;
 import static gregtech.common.items.IDMetaItem03.Circuit_ExoticComputer;
@@ -1250,8 +1254,8 @@ public class MetaGeneratedItem03 extends MetaGeneratedItemX32 implements IItemFi
         ItemList.Circuit_DarkMatter_Unit.set(
             addItemWithLocalizationKeys(
                 Circuit_DarkMatter_Unit.ID, // No texture
-                "gt.item.circuit.darkmatter_unit.name",
-                "gt.item.circuit.darkmatter_unit.tooltip",
+                "gt.item.circuit_darkmatter_unit.name",
+                "gt.item.circuit_darkmatter_unit.tooltip",
                 o));
 
         // Optical circuits
