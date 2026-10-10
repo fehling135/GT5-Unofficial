@@ -423,7 +423,6 @@ public class BeamCrafterRecipes implements Runnable {
             .eut(TierEU.RECIPE_UIV)
             .duration(5 * SECONDS)
             .addTo(beamcrafterRecipes);
-
     }
 
 }

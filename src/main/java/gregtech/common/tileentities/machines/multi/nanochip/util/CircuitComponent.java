@@ -201,7 +201,10 @@ public enum CircuitComponent {
         403,
         "gt.circuitcomponent.board.optical",
         () -> ItemList.Circuit_Board_Optical.get(1)),
-    // id 404 unused
+    BoardExotic(
+        407, 
+        "gt.circuitcomponent.board.exotic",
+        () -> ItemList.Circuit_Board_Exotic.get(1)),
     BioProcessingUnit(
         405,
         "gt.circuitcomponent.bioprocessingunit",
@@ -210,7 +213,7 @@ public enum CircuitComponent {
         406,
         "gt.circuitcomponent.livingbiochip",
         () -> ItemList.Circuit_Parts_Chip_Bioware.get(1)),
-    BoardPico(407, "gt.circuitcomponent.processed.board.pico",null,true),
+    // id 407 unused
     BoardQuantum(408, "gt.circuitcomponent.processed.board.quantum",null,true),
     BoardPlanck(409, "gt.circuitcomponent.processed.board.planck",null,true),
 
@@ -218,11 +221,11 @@ public enum CircuitComponent {
     ProcessedBoardWetwareLifesupport(501, "gt.circuitcomponent.processed.board.wetwarelifesupport", () -> BoardWetwareLifesupport, true),
     ProcessedBoardBioMutated(502, "gt.circuitcomponent.processed.board.biomutated", () -> BoardBioMutated, true),
     ProcessedBoardOptical(503, "gt.circuitcomponent.processed.board.optical", () -> BoardOptical, true),
-    // id 504 unused
+    ProcessedBoardExotic(508, "gt.circuitcomponent.processed.board.exotic",()-> BoardExotic,true),
     ProcessedBioProcessingUnit(505, "gt.circuitcomponent.processed.board.bioprocessingunit", () -> BioProcessingUnit, true),
     ProcessedLivingBioChip(506, "gt.circuitcomponent.processed.board.livingbiochip", () -> LivingBioChip, true),
     UnattunedCircuitry(507,"gt.circuitcomponent.unattunedcircuitry",null,true),
-    CleansedBoardPico(508, "gt.circuitcomponent.processed.board.cleansedpico",()-> BoardPico,true),
+    // id 508 unused
     CleansedBoardQuantum(509, "gt.circuitcomponent.processed.board.cleansedquantum",()-> BoardQuantum,true),
     CleansedBoardPlanck(510, "gt.circuitcomponent.processed.board.cleansedplanck",()-> BoardPlanck,true),
 
