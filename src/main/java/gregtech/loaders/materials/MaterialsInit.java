@@ -15642,6 +15642,8 @@ public class MaterialsInit {
         Materials.QuarkGluonPlasma = loadQuarkGluonPlasma();
         Materials.PhononMedium = loadPhononMedium();
         Materials.PhononCrystalSolution = loadPhononCrystalSolution();
+        Materials.ZeroEntropyCoolantSolvent = loadZeroEntropyCoolantSolvent();
+        Materials.ZeroEntropyCoolant = loadZeroEntropyCoolant();
         Materials.SixPhasedCopper = loadSixPhasedCopper();
         Materials.Mellion = loadMellion();
         Materials.Creon = loadCreon();
@@ -16120,6 +16122,36 @@ public class MaterialsInit {
             .setARGB(0x00ffffff)
             .addCell()
             .setMeltingPoint(500)
+            .setBlastFurnaceTemp(1)
+            .addSubTag(SubTag.TRANSPARENT)
+            .constructMaterial();
+    }
+
+    private static Materials loadZeroEntropyCoolantSolvent() {
+        return new MaterialBuilder().setName("ZeroEntropyCoolantSolvent")
+            .setDefaultLocalName("Zero-Entropy Coolant Solvent")
+            .setChemicalFormula("(S₀)(H₂O)₃(He³)")
+            .setFlavorText("Frigid, but not absolute zero")
+            .setIconSet(TextureSet.SET_ZERO_ENTROPY_COOLANT_SOLVENT)
+            .setARGB(0x005ac8eb)
+            .addCell()
+            .addFluid()
+            .setMeltingPoint(50)
+            .setBlastFurnaceTemp(1)
+            .addSubTag(SubTag.TRANSPARENT)
+            .constructMaterial();
+    }
+
+    private static Materials loadZeroEntropyCoolant() {
+        return new MaterialBuilder().setName("ZeroEntropyCoolant")
+            .setDefaultLocalName("Zero-Entropy Coolant")
+            .setChemicalFormula("S₀")
+            .setFlavorText("A superfluid at absolute zero")
+            .setIconSet(TextureSet.SET_ZERO_ENTROPY_COOLANT)
+            .setARGB(0x00a8e2f6)
+            .addCell()
+            .addFluid()
+            .setMeltingPoint(1)
             .setBlastFurnaceTemp(1)
             .addSubTag(SubTag.TRANSPARENT)
             .constructMaterial();

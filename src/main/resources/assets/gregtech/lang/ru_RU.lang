@@ -5905,6 +5905,12 @@ gt.item.circuit_crystalperfected.name=Совершенный кристалл с
 gt.item.circuit_crystalperfected.tooltip=Абсолютный ноль
 gt.item.circuit_darkmatter_unit.name=Сдерживающее поле тёмной материи
 gt.item.circuit_darkmatter_unit.tooltip=Сдерживает тёмную материю
+gt.item.coolant_containment_field.name=Сдерживающее поле охлаждающей жидкости
+gt.item.coolant_containment_field.tooltip=Создаёт среду для растворения кристаллов с нулевой энтропией
+
+# Zero-Entropy Coolant Line
+Material.zeroentropycoolantsolvent.flavorText=Леденяще холодный, но не абсолютный ноль
+Material.zeroentropycoolant.flavorText=Сверхтекучая жидкость при абсолютном нуле
 
 ## Optical Circuits
 gt.item.circuit.optical_processor.name=Оптический процессор

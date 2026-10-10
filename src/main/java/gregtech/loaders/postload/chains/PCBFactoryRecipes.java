@@ -695,9 +695,9 @@ public class PCBFactoryRecipes {
                     PCBFactoryManager.getPlasticMaterialFromTier(tier)
                         .getPlates(1),
                     GTOreDictUnificator.get(OrePrefixes.foil, Materials.Ichorium, (long) (16 * (Math.sqrt(tier - 7)))),
-                    QUANTUM.getFoil((int) (16 * (Math.sqrt(tier - 7)))),
+                    MaterialsElements.STANDALONE.ASTRAL_TITANIUM.getFoil((int) (16 * (Math.sqrt(tier - 7)))),
                     GTOreDictUnificator
-                        .get(OrePrefixes.foil, Materials.SixPhasedCopper, (long) (4 * (Math.sqrt(tier - 7)))))
+                        .get(OrePrefixes.foil, Materials.SixPhasedCopper, (long) (16 * (Math.sqrt(tier - 7)))))
                 .circuit(2)
                 .fluidInputs(
                     Materials.PrismaticAcid.getFluid((long) (500 * (Math.sqrt(tier - 7)))),
@@ -723,9 +723,9 @@ public class PCBFactoryRecipes {
                     PCBFactoryManager.getPlasticMaterialFromTier(tier)
                         .getPlates(1),
                     GTOreDictUnificator.get(OrePrefixes.foil, Materials.Ichorium, (long) (16 * (Math.sqrt(tier - 7)))),
-                    QUANTUM.getFoil((int) (16 * (Math.sqrt(tier - 7)))),
+                    MaterialsElements.STANDALONE.ASTRAL_TITANIUM.getFoil((int) (16 * (Math.sqrt(tier - 7)))),
                     GTOreDictUnificator
-                        .get(OrePrefixes.foil, Materials.SixPhasedCopper, (long) (4 * (Math.sqrt(tier - 7)))))
+                        .get(OrePrefixes.foil, Materials.SixPhasedCopper, (long) (16 * (Math.sqrt(tier - 7)))))
                 .circuit(3)
                 .fluidInputs(
                     Materials.PrismaticAcid.getFluid((long) (500 * (Math.sqrt(tier - 7)))),

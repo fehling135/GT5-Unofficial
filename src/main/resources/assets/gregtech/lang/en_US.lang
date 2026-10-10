@@ -6445,6 +6445,8 @@ gt.item.circuit_crystalperfected.name=Non-Entropic Perfected Crystal
 gt.item.circuit_crystalperfected.tooltip=Absolute Zero
 gt.item.circuit_darkmatter_unit.name=Dark Matter Containment Field
 gt.item.circuit_darkmatter_unit.tooltip=Containing Dark Matter
+gt.item.coolant_containment_field.name=Coolant Containment Field
+gt.item.coolant_containment_field.tooltip=Provides A Dissolving Environment For Zero-Entropy Crystals
 
 ## Optical Circuits
 gt.item.circuit.optical_processor.name=Optical Processor

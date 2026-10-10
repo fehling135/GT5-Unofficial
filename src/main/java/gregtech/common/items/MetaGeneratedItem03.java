@@ -185,6 +185,7 @@ import static gregtech.common.items.IDMetaItem03.Circuit_Wafer_ZPIC;
 import static gregtech.common.items.IDMetaItem03.Circuit_Wetwarecomputer;
 import static gregtech.common.items.IDMetaItem03.Circuit_Wetwaremainframe;
 import static gregtech.common.items.IDMetaItem03.Circuit_Wetwaresupercomputer;
+import static gregtech.common.items.IDMetaItem03.Coolant_Containment_Field;
 import static gregtech.common.items.IDMetaItem03.Cover_Metrics_Transmitter;
 import static gregtech.common.items.IDMetaItem03.Cover_SolarPanel_UEV;
 import static gregtech.common.items.IDMetaItem03.Cover_SolarPanel_UHV;
@@ -1256,6 +1257,12 @@ public class MetaGeneratedItem03 extends MetaGeneratedItemX32 implements IItemFi
                 Circuit_DarkMatter_Unit.ID, // No texture
                 "gt.item.circuit_darkmatter_unit.name",
                 "gt.item.circuit_darkmatter_unit.tooltip",
+                o));
+        ItemList.Coolant_Containment_Field.set(
+            addItemWithLocalizationKeys(
+                Coolant_Containment_Field.ID,
+                "gt.item.coolant_containment_field.name",
+                "gt.item.coolant_containment_field.tooltip",
                 o));
 
         // Optical circuits

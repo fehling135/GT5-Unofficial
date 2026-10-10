@@ -127,6 +127,11 @@ public enum CondensateType {
         () -> Materials.Eternity,
         144,
         () -> Materials.Eternity.getMolten(144), 240 * SECONDS, TierEU.RECIPE_UXV),
+    ZeroEntropyCoolantSolvent(
+        "zeroentropycoolantsolvent",
+        () -> Materials.ZeroEntropyCoolantSolvent,
+        1000,
+        () -> Materials.ZeroEntropyCoolantSolvent.getFluid(1000), 1 * SECONDS, TierEU.RECIPE_UIV),
     // spotless:on
     ;
 
