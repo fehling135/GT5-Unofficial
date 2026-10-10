@@ -1221,11 +1221,37 @@ public class MetaGeneratedItem03 extends MetaGeneratedItemX32 implements IItemFi
                     "gt.item.circuit_board.transcendent.tooltip",
                     o))
             .setRender(new InfinityMetaItemRenderer());
+        
+        // Exotic circuit parts
         ItemList.Circuit_Board_Exotic_Membrane.set(
             addItemWithLocalizationKeys(
                 Circuit_Board_Exotic_Membrane.ID,
                 "gt.item.circuit_board.exotic_membrane.name",
                 "gt.item.circuit_board.exotic_membrane.tooltip",
+                o));
+        ItemList.Circuit_CrystalPerfected_Seed.set(
+            addItemWithLocalizationKeys(
+                Circuit_CrystalPerfected_Seed.ID, // No texture
+                "gt.item.circuit_crystalperfected_seed.name",
+                "gt.item.circuit_crystalperfected_seed.tooltip",
+                o));
+        ItemList.Circuit_CrystalPerfected_Raw.set(
+            addItemWithLocalizationKeys(
+                Circuit_CrystalPerfected_Raw.ID, // No texture
+                "gt.item.circuit_crystalperfected_raw.name",
+                "gt.item.circuit_crystalperfected_raw.tooltip",
+                o));
+        ItemList.Circuit_CrystalPerfected.set(
+            addItemWithLocalizationKeys(
+                Circuit_CrystalPerfected.ID, // No texture
+                "gt.item.circuit_crystalperfected.name",
+                "gt.item.circuit_crystalperfected.tooltip",
+                o));
+        ItemList.Circuit_DarkMatter_Unit.set(
+            addItemWithLocalizationKeys(
+                Circuit_DarkMatter_Unit.ID, // No texture
+                "gt.item.circuit.darkmatter_unit.name",
+                "gt.item.circuit.darkmatter_unit.tooltip",
                 o));
 
         // Optical circuits

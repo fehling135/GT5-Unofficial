@@ -2047,6 +2047,10 @@ public enum ItemList implements IItemContainer {
     Circuit_Chip_Biocell,
     Circuit_Chip_Optical,
     Circuit_Parts_Chip_Bioware,
+    Circuit_CrystalPerfected_Seed,
+    Circuit_CrystalPerfected_Raw,
+    Circuit_CrystalPerfected,
+    Circuit_DarkMatter_Unit,
 
     Tube_Wires,
     KevlarFiber,

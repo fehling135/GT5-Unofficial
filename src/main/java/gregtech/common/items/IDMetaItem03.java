@@ -289,7 +289,12 @@ public enum IDMetaItem03 {
     Circuit_Board_Exotic(729),
     Circuit_Board_Cosmic(730),
     Circuit_Board_Transcendent(731),
+
     Circuit_Board_Exotic_Membrane(732),
+    Circuit_CrystalPerfected_Seed(733),
+    Circuit_CrystalPerfected_Raw(734),
+    Circuit_CrystalPerfected(735),
+    Circuit_DarkMatter_Unit(736),
 
     Timepiece(757),
     Transdimensional_Alignment_Matrix(758),

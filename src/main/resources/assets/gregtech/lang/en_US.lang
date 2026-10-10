@@ -6433,8 +6433,18 @@ gt.item.circuit_board.cosmic.name=Cosmic Circuit Board
 gt.item.circuit_board.cosmic.tooltip=Cosmos Infused Board
 gt.item.circuit_board.transcendent.name=Temporally Transcendent Circuit Board
 gt.item.circuit_board.transcendent.tooltip=Temporally Warped Board
+
+# Exotic circuit parts
 gt.item.circuit_board.exotic_membrane.name=Exotic Circuit Membrane
 gt.item.circuit_board.exotic_membrane.tooltip=Membrane of Four Dimensions
+gt.item.circuit_crystalperfected_seed.name=Optically Perfected Crystal Seed
+gt.item.circuit_crystalperfected_seed.tooltip=Seed Without Optical Flaw
+gt.item.circuit_crystalperfected_raw.name=Raw Perfected Crystal
+gt.item.circuit_crystalperfected_raw.tooltip=Not Cooled Down!
+gt.item.circuit_crystalperfected.name=Non-Entropic Perfected Crystal
+gt.item.circuit_crystalperfected.tooltip=Absolute Zero
+gt.item.circuit_darkmatter_unit.name=Dark Matter Containment Field
+gt.item.circuit_darkmatter_unit.tooltip=Containing Dark Matter
 
 ## Optical Circuits
 gt.item.circuit.optical_processor.name=Optical Processor
